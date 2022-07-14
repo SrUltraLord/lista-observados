@@ -22,8 +22,8 @@ public class AccountService {
   }
 
   public void withdrawAmountFromAccount(BigDecimal amount, Account account) {
-    BigDecimal previousAmount = account.getBalance();
-    BigDecimal newBalance = previousAmount.subtract(amount);
+    BigDecimal previousBalance = account.getBalance();
+    BigDecimal newBalance = previousBalance.subtract(amount);
 
     account.setBalance(newBalance);
 
@@ -31,8 +31,8 @@ public class AccountService {
   }
 
   public void depositAmountIntoAccount(BigDecimal amount, Account account) {
-    BigDecimal previousAmount = account.getBalance();
-    BigDecimal newBalance = previousAmount.add(amount);
+    BigDecimal previousBalance = account.getBalance();
+    BigDecimal newBalance = previousBalance.add(amount);
 
     account.setBalance(newBalance);
 

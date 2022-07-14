@@ -28,7 +28,6 @@ public class TransactionService {
     Account accountDestination =
         accountService.findByInternalCode(transaction.getAccountDestination());
 
-//    Client clientOrigin = clientService.findById(accountOrigin.getClientId());
     Client clientDestination = clientService.findById(accountDestination.getClientId());
 
     boolean accountOriginHasEnougFunds =
@@ -41,9 +40,9 @@ public class TransactionService {
     boolean isAmountGreaterThanMinCheck =
         transaction.getAmount().compareTo(MIN_TRANSFER_CHECK_AMOUNT) > 0;
     if (isAmountGreaterThanMinCheck) {
-      boolean isDestinataryNarc =
+      boolean isClientNarc =
           narcClientService.findNarcByName(clientDestination.getFullName()).getIsPenalized();
-      if (isDestinataryNarc) {
+      if (isClientNarc) {
         transaction.setInternalCode(UUID.randomUUID().toString());
         transaction.setDate(new Date());
         transaction.setState(TransactionStateEnum.BLOCKED.getValue());
