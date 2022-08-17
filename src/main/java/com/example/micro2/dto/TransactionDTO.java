@@ -1,18 +1,18 @@
 package com.example.micro2.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TransactionDTO {
+@ToString
+public class TransactionDTO implements Serializable {
   private Integer accountOrigin;
   private Integer accountDestination;
   private BigDecimal amount;
+  private String state;
 }

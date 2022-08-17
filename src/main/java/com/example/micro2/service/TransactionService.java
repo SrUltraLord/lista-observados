@@ -2,9 +2,11 @@ package com.example.micro2.service;
 
 import com.example.micro2.config.NarcClientConfig;
 import com.example.micro2.dto.NarcDTO;
+import com.example.micro2.dto.TransactionDTO;
 import com.example.micro2.enums.TransactionStateEnum;
 import com.example.micro2.exception.NotFoundException;
 import com.example.micro2.exception.TransactionException;
+import com.example.micro2.mapper.TransactionFieldSetMapper;
 import com.example.micro2.model.Account;
 import com.example.micro2.model.Client;
 import com.example.micro2.model.Transaction;
@@ -12,6 +14,12 @@ import com.example.micro2.repository.AccountRepository;
 import com.example.micro2.repository.ClientRepository;
 import com.example.micro2.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +28,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionService {
   private static final BigDecimal MIN_TRANSFER_CHECK_AMOUNT = BigDecimal.valueOf(1_000);
 
@@ -62,6 +71,31 @@ public class TransactionService {
     transaction.setState(TransactionStateEnum.EXECUTED.getValue());
 
     return transactionRepository.save(transaction);
+  }
+
+  public void readFile() {
+    FlatFileItemReader<TransactionDTO> itemReader = new FlatFileItemReader<>();
+    itemReader.setResource(new FileSystemResource("resources/transacciones.txt"));
+
+    DefaultLineMapper<TransactionDTO> lineMapper = new DefaultLineMapper<>();
+    lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
+    lineMapper.setFieldSetMapper(new TransactionFieldSetMapper());
+
+    itemReader.setLineMapper(lineMapper);
+    itemReader.open(new ExecutionContext());
+
+    while (true) {
+      TransactionDTO transactionDTO;
+
+      try {
+        transactionDTO = itemReader.read();
+        if (transactionDTO == null) break;
+
+        log.info("Transaction = {}", transactionDTO);
+      } catch (Exception e) {
+        log.error(e.getMessage());
+      }
+    }
   }
 
   public Account findAccountByInternalCode(Integer internalCode) {
