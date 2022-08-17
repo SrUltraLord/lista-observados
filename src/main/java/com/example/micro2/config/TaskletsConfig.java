@@ -37,8 +37,8 @@ public class TaskletsConfig {
   }
 
   @Bean
-  public Job job() {
-    return jobs.get("taskletsJob")
+  public Job processTextFileJob() {
+    return jobs.get("processTextFileJob")
         .start(readLines())
         .next(processLines())
         .next(writeLines())

@@ -9,6 +9,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,8 +20,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Slf4j
 @EnableScheduling
 public class Micro2Application {
-  JobLauncher launcher;
 
+  @Autowired JobLauncher launcher;
+
+  @Autowired
   @Qualifier("processTextFileJob")
   Job processTextFileJob;
 
@@ -28,7 +31,7 @@ public class Micro2Application {
     SpringApplication.run(Micro2Application.class, args);
   }
 
-  @Scheduled(fixedDelay = 1_500, initialDelay = 5_000)
+  @Scheduled(fixedDelay = 2_000, initialDelay = 1_000)
   public void performJob()
       throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException,
           JobParametersInvalidException, JobRestartException {
@@ -36,7 +39,7 @@ public class Micro2Application {
 
     JobParameters params =
         new JobParametersBuilder()
-            .addString("ProcessTextFileJob", "File processing job")
+            .addString("ProcessTextFileJob", String.valueOf(System.currentTimeMillis()))
             .toJobParameters();
 
     launcher.run(processTextFileJob, params);

@@ -1,6 +1,7 @@
 package com.example.micro2.process;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -11,21 +12,29 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ProcessLineTask implements Tasklet, StepExecutionListener {
-
-  private final MongoTemplate mongoTemplate;
+  private final MongoTemplate template;
 
   @Override
-  public void beforeStep(StepExecution stepExecution) {}
+  public void beforeStep(StepExecution stepExecution) {
+    log.info("ReadLineTask: Before");
+  }
 
   @Override
   public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext)
       throws Exception {
-    return null;
+
+    log.info("ReadLineTask: Execute");
+
+    return RepeatStatus.FINISHED;
   }
 
   @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
-    return null;
+
+    log.info("ReadLineTask: After");
+
+    return ExitStatus.COMPLETED;
   }
 }
