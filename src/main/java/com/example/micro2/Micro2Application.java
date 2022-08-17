@@ -32,6 +32,7 @@ public class Micro2Application {
   }
 
   @Scheduled(fixedDelay = 2_000, initialDelay = 1_000)
+//  @Scheduled(cron = "0 0 * * *") // Daily job
   public void performJob()
       throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException,
           JobParametersInvalidException, JobRestartException {
